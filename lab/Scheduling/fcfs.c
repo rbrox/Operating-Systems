@@ -23,7 +23,7 @@ void input(){
     printf("Enter number of processes: ");
     scanf("%d", &process_count);
 
-    if(x > MAX){
+    if(process_count > MAX){
         printf("Too many processes");
         exit(0);
     }
