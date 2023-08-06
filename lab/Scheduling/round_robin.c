@@ -56,25 +56,38 @@ void input(){
 
 // Perform Shortest Job First Scehduling
 void schedule(){
-    for (int i = 0; i < process_count; wait_time[i] = 0, ++i);
+    for (int i = 0; i < process_count ; ++i);
     int curr_time = 0;
     int curr_job = 0;
     while(1){
-        wait_time[curr_job] += curr_time;
+        
+        printf("\tloop: ");
 
         if(remaining_burst_time[curr_job] > time_slice){
             remaining_burst_time[curr_job] -= time_slice;
             curr_time += time_slice;
             order[order_count++] = curr_job;
         }
-        else if (remaining_burst_time > 0){
+        else if (remaining_burst_time[curr_job] > 0){
             curr_time += remaining_burst_time[curr_job];
             remaining_burst_time[curr_job] = 0;
             turn_around_time[curr_job] = curr_time;
+            wait_time[curr_job] = curr_time - burst_time[curr_job];
             order[order_count++] = curr_job;
         }
-        if (swt){
+
+        printf("\t%d %d %d\n",curr_job, curr_time, remaining_burst_time[curr_job]);
+
+        if (swt()){
+            printf("\tbreaking\n");
             break;
+        }
+        
+        if (curr_job == process_count - 1){
+            curr_job = 0;
+        }
+        else{
+            ++ curr_job;
         }
     }
 
