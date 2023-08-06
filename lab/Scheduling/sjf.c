@@ -5,6 +5,7 @@
 // Global variables
 #define MAX 10 // Max process count
 int process_count;
+int process_id[MAX];
 int burst_time[MAX];
 int wait_time[MAX];
 int turn_around_time[MAX];
@@ -19,7 +20,7 @@ The things we take as input
 */ 
 
 void input(){
-    
+    int x;
     printf("Enter number of processes: ");
     scanf("%d", &process_count);
 
@@ -34,21 +35,45 @@ void input(){
     }
 }
 
-// Perform First Come First Serve Scehduling
+// Perform Shortest Job First Scehduling
 void schedule(){
-    int curr_time = 0;
+    for(int i = 0; i < MAX; process_id[i] = i , ++i);
+    // Sorting the burst time array and filling process id so as to keep track of pid's
+    int min_index, min;
+    for (int i = 0; i < process_count; ++i){
+        min = burst_time[i];
+        min_index = i;
+        for (int j = i + 1; j < process_count; ++j){
+            if (min > burst_time[j]){
+                min_index = j;
+                min = burst_time[j];
+            }
+        }
+
+        // Swap
+        int temp = burst_time[i];
+        burst_time[i] = min;
+        burst_time[min_index] = temp;
+
+        // Maintain process_id 
+        temp = process_id[i];
+        process_id[i] = min_index;
+        process_id[min_index] = temp;
+    }
+    printf("\n\tSorted....\n");
     for(int i = 0; i < process_count; ++i){
-        printf("test");
-        // Wait time is the time for which this process was made to wait 
+        printf("\t%d %d\n", process_id[i], burst_time[i]);
+    }
+
+    
+    int curr_time = 0;
+    for (int i = 0; i < process_count; ++i){
         wait_time[i] = curr_time;
-        // The current process is being executed
+
         curr_time += burst_time[i];
-        //The tat is being noted (time at which the process finished)
         turn_around_time[i] = curr_time;
-        
-        printf("%d\t%d\t%d\t%d\n", i, burst_time[i], wait_time[i], turn_around_time[i]);
-        
-        order[order_count++] = i;
+
+        order[order_count++] = process_id[i];
     }
 }
 
@@ -75,7 +100,7 @@ void display()
 }
 
 
-int main()
+void main()
 {
     // Get process_count and burst times 
     input();
@@ -84,6 +109,4 @@ int main()
     schedule();
     printf("\nDisplaying....\n");
     display();
-
-    return 0;
 }
